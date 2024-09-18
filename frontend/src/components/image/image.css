@@ -1,0 +1,14 @@
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list.ant-upload-list-picture-card{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item-container{
+    width: 15vw;
+    height: 20vh;   
+}
+
+.ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select{
+    width: 15vw  !important;
+    height: 20vh !important;  
+}
