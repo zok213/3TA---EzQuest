@@ -23,3 +23,11 @@
     line-height: 22px; /* 137.5% */
     letter-spacing: -0.112px;
 }
+
+.answer{
+    overflow-y: auto ;
+}
+
+.response {
+    overflow-y: auto;
+}

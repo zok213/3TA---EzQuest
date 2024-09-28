@@ -1,12 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import os
 import google.generativeai as genai
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn 
+from pydantic import BaseModel
+from dotenv import load_dotenv
+load_dotenv()
+key = os.getenv("GENAI_API_KEY")
+
 app = FastAPI()
 origins = [
-    "http://10.12.80.197:3000 ",
+    "http://192.168.1.102:3000 ",
     "http://localhost:3000",
 ]
 
@@ -17,10 +22,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-@app.put("/home")
-async def create_item(prom: str):
+
+class Prompt(BaseModel):
+    prom: str
+
+@app.post("/post")
+async def create_item(prompt: Prompt):
     try:
-        genai.configure(api_key="AIzaSyAIR9eZ6fPz3VSvsndbGd_pIsC9SiSScl0")
+
+        genai.configure(api_key=key)
         # Create the model
         generation_config = {
         "temperature": 1,
@@ -31,17 +41,16 @@ async def create_item(prom: str):
         }
         
         model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        generation_config=generation_config,
-        # safety_settings = Adjust safety settings
-        # See https://ai.google.dev/gemini-api/docs/safety-settings
+            model_name="gemini-1.5-flash",
+            generation_config=generation_config,
         )
         chat_session = model.start_chat(
-        history=[
-        ]
+        history=[]
         )
-        return chat_session.send_message(prom).text
+        response = chat_session.send_message(prompt.prom).text
+        return {"answer": response}
     except Exception as e:
-        return {"error": str(e)}
-
+        raise HTTPException(status_code=500, detail=str(e))
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
     
